@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from "axios";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import logoImage from './logo_with_name.png';
@@ -66,8 +67,31 @@ const LoginButton = styled.button`
 function LoginPage() {
   const navigate = useNavigate();
 
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const callApi = async () => {
+    try {
+      const requestBody = {id, password};
+      const response = await axios.post("http://localhost:5000/login_process",  requestBody , {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+     
+     if(response.data.code === 202) {
+      console.log(response.data);
+      navigate('/main'); }
+      else console.log(response.data.reason)
+
+    } catch (error) {
+      console.error('Error in API call:', error);
+    }
+
+  };
   const handleLogin = () => {
-    navigate('/main');
+    callApi();
   };
 
   const handleSignUp = () => {
@@ -80,8 +104,18 @@ function LoginPage() {
         <img src={logoImage} alt="Realtyview Logo" style={{ width: '300px' }} />
       </Logo>
       <LoginBox>
-        <LoginInput type="text" placeholder="ID..." />
-        <LoginInput type="password" placeholder="Password..." />
+        <LoginInput 
+          type="text"
+          name="id" 
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          placeholder="ID..." />
+        <LoginInput 
+          type="password"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password..." />
         <ButtonContainer>
           <RegisterButton onClick={handleSignUp}>Register</RegisterButton>
           <LoginButton onClick={handleLogin}>Login</LoginButton>

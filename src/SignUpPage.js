@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -49,29 +50,42 @@ const SignUpButton = styled.button`
   color: white;
 `;
 
-function SignUpPage() {
+const SignUpPage = () => {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    id: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
-    userType: '',
-  });
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [userType, setUserType] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
+  const callApi = async () => {
+    try {
+      const requestBody = { id, password, confirmPassword, name, userType };
+      console.log('Sending request:', requestBody);
+
+      const response = await axios.post("http://localhost:5000/join_process", requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+
+      console.log('Response:', response.data);
+
+      if (response.data.code === 202) {
+        console.log(response.data);
+        navigate('/');
+      } else {
+        console.log('Error:', response.data.reason);
+      }
+    } catch (error) {
+      console.error('Error in API call:', error.response ? error.response.data : error.message);
+    }
   };
 
   const handleSignUp = () => {
-    // 회원가입 로직을 여기에 추가
-    console.log(form);
-    navigate('/');
+    callApi();
   };
 
   return (
@@ -82,34 +96,34 @@ function SignUpPage() {
           type="text"
           name="id"
           placeholder="아이디"
-          value={form.id}
-          onChange={handleChange}
+          value={id}
+          onChange={(e) => setId(e.target.value)}
         />
         <SignUpInput
           type="password"
           name="password"
           placeholder="비밀번호"
-          value={form.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <SignUpInput
           type="password"
           name="confirmPassword"
           placeholder="비밀번호 확인"
-          value={form.confirmPassword}
-          onChange={handleChange}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <SignUpInput
           type="text"
           name="name"
           placeholder="이름"
-          value={form.name}
-          onChange={handleChange}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         <UserTypeSelect
           name="userType"
-          value={form.userType}
-          onChange={handleChange}
+          value={userType}
+          onChange={(e) => setUserType(e.target.value)}
         >
           <option value="">유저 유형</option>
           <option value="admin">관리자</option>
@@ -119,6 +133,6 @@ function SignUpPage() {
       </SignUpBox>
     </SignUpContainer>
   );
-}
+};
 
 export default SignUpPage;
