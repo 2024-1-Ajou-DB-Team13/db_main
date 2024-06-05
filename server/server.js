@@ -13,16 +13,19 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.set("port", process.env.PORT || 3002);
+app.set("port", process.env.PORT || 5000);
 app.set("host", process.env.HOST || "0.0.0.0");
 
+
+// 회원가입
 app.post('/join_process', function(req, res) {    
     const { id, password, confirmPassword, name, userType } = req.body;
 
     console.log('Received data:', { id, password, confirmPassword, name, userType });
     
     if (id && password && confirmPassword && name && userType) {
-        db.query('SELECT * FROM user WHERE UserId = ?', [id], function(error, results, fields) { 
+        db.query('SELECT * FROM user WHERE UserId = ?', [id], function(error, results, fields) {
+            console.log(results);
             if (error) {
                 console.error('DB query error:', error);
                 return res.json({ code: 500, reason: "DB query error" });
@@ -48,6 +51,8 @@ app.post('/join_process', function(req, res) {
     }
 });
 
+
+// 로그인
 app.post('/login_process', (req, res) => {
     const { id, password } = req.body;
 
@@ -56,6 +61,7 @@ app.post('/login_process', (req, res) => {
     if (id && password) {
         db.query('SELECT * FROM user WHERE UserId = ? AND Password = ?', 
         [id, password], function(error, results, fields) {
+            console.log(results);
             if (error) {
                 console.error('DB query error:', error);
                 return res.json({ code: 500, reason: "DB query error" });
@@ -69,6 +75,91 @@ app.post('/login_process', (req, res) => {
     } else {
         res.json({ code: 404, reason: "아이디 혹은 비밀번호를 입력하지 않았습니다." });
     }
+});
+
+// 금일 예약자 명단
+app.post('/reservations_process', (req,res) =>{
+    
+    var today = new Date();
+
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+
+    var dateString = year + '-' + month  + '-' + day;
+
+    db.query(`SELECT * FROM customers WHERE ReservationTime like '%${dateString}%' `, (error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have customer" });
+        } 
+   }) 
+});
+
+//직원 관리
+app.post('/employee_process', (req,res) =>{
+
+    db.query('SELECT * FROM user', (error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have user" });
+        } 
+   }) 
+});
+
+//전체 고객 데이터
+app.post('/customer_process', (req,res) =>{
+    db.query('SELECT * FROM customers', (error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have user" });
+        } 
+   }) 
+});
+
+//전체 매물 데이터
+app.post('/property_process', (req,res) =>{
+    db.query('SELECT * FROM property', (error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have user" });
+        } 
+   }) 
+});
+
+app.post('/advertisement_process', (req,res) =>{
+    db.query('SELECT property.PropertyName, advertisement.Media,advertisement.InquiryCount FROM advertisement INNER JOIN property ON advertisement.PropertyID = property.PropertyID',
+    (error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have user" });
+        } 
+   }) 
 });
 
 const port = 5000;
