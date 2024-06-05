@@ -82,21 +82,9 @@ function LoginPage() {
      
      if(response.data.code === 202) {
       console.log(response.data);
+      localStorage.setItem('userType', response.data.type);
       navigate('/main'); }
       else console.log(response.data.reason)
-
-    //   console.log(response.data); //유저 유형에 따른 접속(실패)
-    //   const userType = response.data.UserType;
-    //   console.log('UserType:', userType);
-
-    //   if (userType === 'admin') {
-    //     navigate('/main');
-    //   } else if (userType === 'general' || userType === 'manager') {
-    //     navigate('/view');
-    //   }
-    // } else {
-    //   console.log(response.data.reason);
-    // }
 
     } catch (error) {
       console.error('Error in API call:', error);

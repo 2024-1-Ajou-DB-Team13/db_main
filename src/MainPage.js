@@ -57,6 +57,7 @@ const ManagerMenu = styled.div`
 `;
 
 function MainPage() {
+  const userType = localStorage.getItem('userType');
   const userName = "UserName";
 
   return (
@@ -64,14 +65,18 @@ function MainPage() {
       <Navigation>
         <UserDisplayComponent userName={userName}/>
         <NavButton to="/main/reservations">금일 예약 고객님</NavButton>
-        <ManagerMenu>
-          <AdminMenu>
-            <NavButton to="/main/property-data">전체 매물 데이터</NavButton>
-          </AdminMenu>
-          <NavButton to="/main/inquiries">광고 매체별 문의</NavButton>
-          <NavButton to="/main/customer-data">전체 고객 데이터</NavButton>
-          <NavButton to="/main/employee-management">직원 관리</NavButton>
-        </ManagerMenu>
+        {(userType === "manager" || userType === "admin") &&
+          <ManagerMenu>
+            {(userType === "admin") &&
+              <AdminMenu>
+                <NavButton to="/main/property-data">전체 매물 데이터</NavButton>
+              </AdminMenu>
+            }
+            <NavButton to="/main/inquiries">광고 매체별 문의</NavButton>
+            <NavButton to="/main/customer-data">전체 고객 데이터</NavButton>
+            <NavButton to="/main/employee-management">직원 관리</NavButton>
+          </ManagerMenu>
+        }
       </Navigation>
       <Content>
         <Routes>
