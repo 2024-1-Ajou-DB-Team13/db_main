@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from 'react';
-import {Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import DesiredPriceRange from './DesiredPriceRange';
 
 const Container = styled.div`
-  padding: 0px;
+  padding: 20px;
 `;
 
 const Header = styled.h1`
@@ -38,41 +38,52 @@ const PriceButton = styled.button`
   padding: 10px;
   font-size: 16px;
   cursor: pointer;
-  background-color: #73D116; /* 버튼 배경색 */
-  color: white; /* 버튼 텍스트 색상 */
-  border: 1px solid #73D116; /* 버튼 테두리 색상 */
-  border-radius: 5px; /* 버튼 모서리 둥글게 */
+  background-color: #73D116;
+  color: white;
+  border: 1px solid #73D116;
+  border-radius: 5: 5px;
   transition: background-color 0.3s, color 0.3s;
 
   &:hover {
-    background-color: #66b914; /* 호버 시 배경색 */
-    color: #fff; /* 호버 시 텍스트 색상 */
+    background-color: #66b914;
+    color: #fff;
   }
 `;
 
-function Reservations() {
-  const tableRef = useRef(null);
-  const reservations = [
-    { cusID: 1, Name: "John Doe", ReservationTime: "12:00", DesiredPriceRange: "3억" },
-    { cusID: 2, Name: "Jane Smith", ReservationTime: "15:00", DesiredPriceRange: "3억" },
-    { cusID: 3, Name: "John Doe", ReservationTime: "12:00", DesiredPriceRange: "3억" },
-    { cusID: 4, Name: "John Doe", ReservationTime: "12:00", DesiredPriceRange: "3억" },
-    { cusID: 5, Name: "John Doe", ReservationTime: "12:00", DesiredPriceRange: "3억" },
-    { cusID: 6, Name: "John Doe", ReservationTime: "12:00", DesiredPriceRange: "3억" },
-  ];
+const NoDataMessage = styled.div`
+  text-align: center;
+  font-size: 20px;
+  color: #666;
+  margin-top: 20px;
+`;
 
-  const callApi = async()=>{
+function Reservations() {
+  const [reservations, setReservations] = useState([]);
+  const [noData, setNoData] = useState(false);
+  const tableRef = useRef(null);
+
+  const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/reservations_process", { withCredentials: true } );
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/reservations_process", {}, { withCredentials: true });
+      if (response.data.code === 202 && Array.isArray(response.data)) {
+        setReservations(response.data);
+        setNoData(false);
+      } else if (response.data.code === 404) {
+        setNoData(true);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
+      if (error.response && error.response.status === 404) {
+        setNoData(true);
+      } else {
+        setNoData(false);
+      }
     }
   };
 
-  useEffect(()=>{
-      callApi();
-    }, []);
+  useEffect(() => {
+    callApi();
+  }, []);
 
   const openPriceRangeWindow = () => {
     const tableRect = tableRef.current.getBoundingClientRect();
@@ -84,26 +95,32 @@ function Reservations() {
   return (
     <Container>
       <Header>금일 예약 고객님</Header>
-      <Table ref={tableRef}>
-        <thead>
-          <tr>
-            <Th>번호</Th>
-            <Th>성 함</Th>
-            <Th>예약 시간</Th>
-            <Th>희망 가격대</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {reservations.map(reservation => (
-            <tr key={reservation.cusID}>
-              <Td>{reservation.cusID}</Td>
-              <Td>{reservation.Name} 님</Td>
-              <Td>{reservation.ReservationTime}</Td>
-              <Td><PriceButton onClick={openPriceRangeWindow}>{reservation.DesiredPriceRange}</PriceButton></Td>
+      {noData ? (
+        <NoDataMessage>금일 손님이 없습니다.</NoDataMessage>
+      ) : (
+        <Table ref={tableRef}>
+          <thead>
+            <tr>
+              <Th>번호</Th>
+              <Th>성 함</Th>
+              <Th>예약 시간</Th>
+              <Th>희망 가격대</Th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {reservations.map((reservation, index) => (
+              <tr key={index}>
+                <Td>{index + 1}</Td>
+                <Td>{reservation.Name} 님</Td>
+                <Td>{reservation.ReservationTime}</Td>
+                <Td>
+                  <PriceButton onClick={openPriceRangeWindow}>{reservation.DesiredPriceRange}</PriceButton>
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
       <Routes>
         <Route path="/price" element={<DesiredPriceRange />} />
       </Routes>
