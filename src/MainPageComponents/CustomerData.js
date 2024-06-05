@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 0px;
+  padding: 20px;
 `;
 
 const Header = styled.h1`
@@ -32,27 +32,51 @@ const Td = styled.td`
   font-size: 20px;
 `;
 
-function CustomerData() {
-  const customer = [
-    {CusID:1, DesiredPriceRange:7005, Name:"Customer_1", ReservationTime:"2025-03-15T17:01:19.000Z"},
-    {CusID:1, DesiredPriceRange:7005, Name:"Customer_1", ReservationTime:"2025-03-15T17:01:19.000Z"},
-    {CusID:1, DesiredPriceRange:7005, Name:"Customer_1", ReservationTime:"2025-03-15T17:01:19.000Z"},
-    {CusID:1, DesiredPriceRange:7005, Name:"Customer_1", ReservationTime:"2025-03-15T17:01:19.000Z"},
-    {CusID:1, DesiredPriceRange:7005, Name:"Customer_1", ReservationTime:"2025-03-15T17:01:19.000Z"},
-  ];
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
 
-  const callApi = async()=>{
+const PageButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 10px;
+`;
+
+function CustomerData() {
+  const [customers, setCustomers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6; // 한 페이지에 표시할 아이템 수 조정
+
+  const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/customer_process", { withCredentials: true } );
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/customer_process", {}, { withCredentials: true });
+      setCustomers(response.data); // 데이터를 상태에 저장
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(()=>{
-      callApi();
-    }, []);
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  // 현재 페이지에 표시할 데이터 계산
+  const currentData = customers.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < customers.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <Container>
@@ -67,9 +91,9 @@ function CustomerData() {
           </tr>
         </thead>
         <tbody>
-          {customer.map(customer => (
-            <tr key={customer.cusID}>
-              <Td>{customer.CusID}</Td>
+          {currentData.map((customer, index) => (
+            <tr key={index}>
+              <Td>{currentPage * itemsPerPage + index + 1}</Td>
               <Td>{customer.Name}</Td>
               <Td>{customer.ReservationTime}</Td>
               <Td>{customer.DesiredPriceRange}</Td>
@@ -77,6 +101,10 @@ function CustomerData() {
           ))}
         </tbody>
       </Table>
+      <PaginationContainer>
+        <PageButton onClick={previousPage}>이전</PageButton>
+        <PageButton onClick={nextPage}>다음</PageButton>
+      </PaginationContainer>
     </Container>
   );
 }
