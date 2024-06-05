@@ -52,6 +52,11 @@ const AdminMenu = styled.div`
   width: 100%;
 `;
 
+const ManagerMenu = styled.div`
+  margin-top: auto;
+  width: 100%;
+`;
+
 function MainPage() {
   const userName = "UserName";
 
@@ -60,13 +65,14 @@ function MainPage() {
       <Navigation>
         <UserDisplayComponent userName={userName}/>
         <NavButton to="/main/reservations">금일 예약 고객님</NavButton>
-        <NavButton to="/main/calls">콜 메뉴</NavButton>
-        <NavButton to="/main/inquiries">광고 매체별 문의</NavButton>
-        <AdminMenu>
+        <ManagerMenu>
+          <AdminMenu>
+            <NavButton to="/main/property-data">전체 매물 데이터</NavButton>
+          </AdminMenu>
+          <NavButton to="/main/inquiries">광고 매체별 문의</NavButton>
           <NavButton to="/main/customer-data">전체 고객 데이터</NavButton>
-          <NavButton to="/main/property-data">전체 매물 데이터</NavButton>
           <NavButton to="/main/employee-management">직원 관리</NavButton>
-        </AdminMenu>
+        </ManagerMenu>
       </Navigation>
       <Content>
         <Routes>
