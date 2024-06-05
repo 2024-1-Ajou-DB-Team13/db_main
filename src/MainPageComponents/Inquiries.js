@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 0px;
+  padding: 20px;
 `;
 
 const Header = styled.h1`
@@ -32,51 +32,79 @@ const Td = styled.td`
   font-size: 20px;
 `;
 
-function Inquiries() {
-  const inquiries = [
-    {PropertyName: 'Property_38', Media: '직방', InquiryCount: 32},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-  ];
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
 
-  const callApi = async()=>{
+const PageButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 10px;
+`;
+
+function Inquiries() {
+  const [inquiries, setInquiries] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
+
+  const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/advertisement_process", { withCredentials: true } );
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/advertisement_process", {}, { withCredentials: true });
+      setInquiries(response.data); // 데이터를 상태에 저장
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(()=>{
-      callApi();
-    }, []);
-  var index = 1;
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  // 현재 페이지에 표시할 데이터 계산
+  const currentData = inquiries.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < inquiries.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <Container>
       <Header>광고 매체별 문의</Header>
       <Table>
         <thead>
           <tr>
-            <Th>순위</Th>
+            <Th>번호</Th>
             <Th>매물명</Th>
             <Th>광고 매체 명</Th>
             <Th>문의 횟수</Th>
           </tr>
         </thead>
         <tbody>
-          {inquiries.map(inquiries => (
-            <tr>
-              <Td>{index++}</Td>
-              <Td>{inquiries.PropertyName}</Td>
-              <Td>{inquiries.Media}</Td>
-              <Td>{inquiries.InquiryCount}</Td>
+          {currentData.map((inquiry, index) => (
+            <tr key={index}>
+              <Td>{currentPage * itemsPerPage + index + 1}</Td>
+              <Td>{inquiry.PropertyName}</Td>
+              <Td>{inquiry.Media}</Td>
+              <Td>{inquiry.InquiryCount}</Td>
             </tr>
           ))}
         </tbody>
       </Table>
+      <PaginationContainer>
+        <PageButton onClick={previousPage}>이전</PageButton>
+        <PageButton onClick={nextPage}>다음</PageButton>
+      </PaginationContainer>
     </Container>
   );
 }
