@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 0px;
+  padding: 20px;
 `;
 
 const Header = styled.h1`
@@ -32,27 +32,53 @@ const Td = styled.td`
   font-size: 20px;
 `;
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+const PageButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 10px; // 버튼 사이의 간격
+`;
+
 function PropertyData() {
+  const [properties, setProperties] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;  // 한 페이지에 표시할 아이템 수
 
-  const property = [
-    {Address: "서울시 관악구 테헤란로 35-75", Grade: "C", LandlordContact:"01000650217", PriceRange: 33433, PropertyID: 1, PropertyName: "Property_1"},
-    {Address: "서울시 관악구 테헤란로 35-75", Grade: "C", LandlordContact:"01000650217", PriceRange: 33433, PropertyID: 1, PropertyName: "Property_1"},
-    {Address: "서울시 관악구 테헤란로 35-75", Grade: "C", LandlordContact:"01000650217", PriceRange: 33433, PropertyID: 1, PropertyName: "Property_1"},
-    {Address: "서울시 관악구 테헤란로 35-75", Grade: "C", LandlordContact:"01000650217", PriceRange: 33433, PropertyID: 1, PropertyName: "Property_1"},
-  ];
-
-  const callApi = async()=>{
+  const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/property_process", { withCredentials: true } );
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/property_process", {}, {
+        withCredentials: true
+      });
+      setProperties(response.data);  // 전체 데이터 저장
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(()=>{
-      callApi();
-    }, []);
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  // 현재 페이지에 표시할 데이터 계산
+  const currentData = properties.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < properties.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <Container>
@@ -69,18 +95,22 @@ function PropertyData() {
           </tr>
         </thead>
         <tbody>
-          {property.map(property => (
-            <tr key={property.cusID}>
+          {currentData.map(property => (
+            <tr key={property.PropertyID}>
               <Td>{property.PropertyID}</Td>
               <Td>{property.PropertyName}</Td>
               <Td>{property.PriceRange}</Td>
               <Td>{property.LandlordContact}</Td>
-              <Td>{property.Address}</Td>
               <Td>{property.Grade}</Td>
+              <Td>{property.Address}</Td>
             </tr>
           ))}
         </tbody>
       </Table>
+      <PaginationContainer>
+        <PageButton onClick={previousPage}>이전</PageButton>
+        <PageButton onClick={nextPage}>다음</PageButton>
+      </PaginationContainer>
     </Container>
   );
 }
