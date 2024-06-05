@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import {Route, Routes, NavLink } from 'react-router-dom';
 
 import Reservations from './MainPageComponents/Reservations';
-import Calls from './MainPageComponents/Calls';
 import Inquiries from './MainPageComponents/Inquiries';
 import CustomerData from './MainPageComponents/CustomerData';
 import PropertyData from './MainPageComponents/PropertyData';
@@ -77,7 +76,6 @@ function MainPage() {
       <Content>
         <Routes>
           <Route path="reservations" element={<Reservations />} />
-          <Route path="calls" element={<Calls />} />
           <Route path="inquiries" element={<Inquiries />} />
           <Route path="customer-data" element={<CustomerData />} />
           <Route path="property-data" element={<PropertyData />} />
