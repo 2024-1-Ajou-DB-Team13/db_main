@@ -27,7 +27,7 @@ const Navigation = styled.div`
 const Content = styled.div`
   flex-grow: 1;
   background-color: #ecffef;
-  padding: 20px;
+  padding: 5px;
 `;
 
 const NavButton = styled(NavLink)`
