@@ -125,8 +125,8 @@ const SignUpPage = () => {
           value={userType}
           onChange={(e) => setUserType(e.target.value)}
         >
-          <option value="user">유저</option>
-          <option value="midAdmin">중간 관리자</option>
+          <option value="general">유저</option>
+          <option value="manager">중간 관리자</option>
           <option value="admin">관리자</option>
         </UserTypeSelect>
         <SignUpButton onClick={handleSignUp}>등록</SignUpButton>
