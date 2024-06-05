@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { Route, Routes, NavLink } from "react-router-dom";
+import AdToPro from "./AdToPro";
 
 const Container = styled.div`
   padding: 20px;
@@ -32,6 +34,22 @@ const Td = styled.td`
   font-size: 20px;
 `;
 
+const StyledNavLink = styled(NavLink)`
+  display: table-row;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover,
+  &.active {
+    background-color: #73d116;
+    color: white;
+
+    & td {
+      background-color: #73d116;
+    }
+  }
+`;
+
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -53,7 +71,7 @@ function Inquiries() {
   const callApi = async () => {
     try {
       const response = await axios.post("http://localhost:5000/advertisement_process", {}, { withCredentials: true });
-      setInquiries(response.data); // 데이터를 상태에 저장
+      setInquiries(response.data); // Assuming the data is an array of inquiries
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -63,7 +81,6 @@ function Inquiries() {
     callApi();
   }, []);
 
-  // 현재 페이지에 표시할 데이터 계산
   const currentData = inquiries.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   const nextPage = () => {
@@ -92,12 +109,12 @@ function Inquiries() {
         </thead>
         <tbody>
           {currentData.map((inquiry, index) => (
-            <tr key={index}>
+            <StyledNavLink to="/adtopro" key={index}>
               <Td>{currentPage * itemsPerPage + index + 1}</Td>
               <Td>{inquiry.PropertyName}</Td>
               <Td>{inquiry.Media}</Td>
               <Td>{inquiry.InquiryCount}</Td>
-            </tr>
+            </StyledNavLink>
           ))}
         </tbody>
       </Table>
@@ -105,6 +122,9 @@ function Inquiries() {
         <PageButton onClick={previousPage}>이전</PageButton>
         <PageButton onClick={nextPage}>다음</PageButton>
       </PaginationContainer>
+      <Routes>
+        <Route path="/adtopro" element={<AdToPro />} />
+      </Routes>
     </Container>
   );
 }
