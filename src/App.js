@@ -4,6 +4,7 @@ import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
 import MainPage from './MainPage';
 import DesiredPriceRange from './MainPageComponents/DesiredPriceRange';
+import AdToPro from './MainPageComponents/AdToPro';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/main/*" element={<MainPage />} />
           <Route path="/price" element={<DesiredPriceRange />} />
+          <Route path="/adtopro" element={<AdToPro />} />
         </Routes>
       </div>
     </Router>

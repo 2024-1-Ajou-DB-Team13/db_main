@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { Route, Routes, NavLink } from "react-router-dom";
+import AdToPro from "./AdToPro";
 
 const Container = styled.div`
   padding: 0px;
@@ -32,27 +34,46 @@ const Td = styled.td`
   font-size: 20px;
 `;
 
+const StyledNavLink = styled(NavLink)`
+  display: table-row;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover,
+  &.active {
+    background-color: #73d116;
+    color: white;
+
+    & td {
+      background-color: #73d116;
+    }
+  }
+`;
+
 function Inquiries() {
   const inquiries = [
-    {PropertyName: 'Property_38', Media: '직방', InquiryCount: 32},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
-    {PropertyName: 'Property_36', Media: '네이버', InquiryCount: 131},
+    { PropertyName: "Property_38", Media: "직방", InquiryCount: 32 },
+    { PropertyName: "Property_36", Media: "네이버", InquiryCount: 131 },
+    { PropertyName: "Property_36", Media: "네이버", InquiryCount: 131 },
+    { PropertyName: "Property_36", Media: "네이버", InquiryCount: 131 },
+    { PropertyName: "Property_36", Media: "네이버", InquiryCount: 131 },
   ];
 
-  const callApi = async()=>{
+  const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/advertisement_process", { withCredentials: true } );
+      const response = await axios.post(
+        "http://localhost:5000/advertisement_process",
+        { withCredentials: true }
+      );
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(()=>{
-      callApi();
-    }, []);
+  useEffect(() => {
+    callApi();
+  }, []);
   var index = 1;
   return (
     <Container>
@@ -67,16 +88,19 @@ function Inquiries() {
           </tr>
         </thead>
         <tbody>
-          {inquiries.map(inquiries => (
-            <tr>
+          {inquiries.map((inquiries) => (
+            <StyledNavLink to="/adtopro" key={index}>
               <Td>{index++}</Td>
               <Td>{inquiries.PropertyName}</Td>
               <Td>{inquiries.Media}</Td>
               <Td>{inquiries.InquiryCount}</Td>
-            </tr>
+            </StyledNavLink>
           ))}
         </tbody>
       </Table>
+      <Routes>
+        <Route path="adtopro" element={<AdToPro />} />
+      </Routes>
     </Container>
   );
 }
