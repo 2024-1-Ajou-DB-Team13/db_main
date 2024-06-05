@@ -68,7 +68,7 @@ function Inquiries() {
         </thead>
         <tbody>
           {inquiries.map(inquiries => (
-            <tr key={inquiries.cusID}>
+            <tr>
               <Td>{index++}</Td>
               <Td>{inquiries.PropertyName}</Td>
               <Td>{inquiries.Media}</Td>
