@@ -31,6 +31,21 @@ function AdToPro() {
     { id: 1, name: "호반베르디움 아파트", grade: "A", address: "서울시 관악구 관악로",pricerange: "3억 2000", phone: "010-1234-5678" },
   ];
 
+  const p_id = localStorage.getItem('property_id');
+
+  const callApi = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/adtopro_process", {p_id}, { withCredentials: true });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    callApi();
+  }, []);
+
   const handleClose = () => {
     window.close();
   };
