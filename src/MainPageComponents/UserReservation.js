@@ -61,14 +61,7 @@ function Reservations() {
     { cusID: 6, Name: "John Doe", ReservationTime: "12:00", DesiredPriceRange: "3억" },
   ];
 
-  const callApi = async()=>{
-    try {
-      const response = await axios.post("http://localhost:5000/reservations_process", { withCredentials: true } );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  
 
   useEffect(()=>{
       callApi();

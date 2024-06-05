@@ -21,7 +21,7 @@ app.set("host", process.env.HOST || "0.0.0.0");
 app.post('/join_process', function(req, res) {    
     const { id, password, confirmPassword, name, userType } = req.body;
 
-    console.log('Received data:', { id, password, confirmPassword, name, userType });
+    //console.log('Received data:', { id, password, confirmPassword, name, userType });
     
     if (id && password && confirmPassword && name && userType) {
         db.query('SELECT * FROM user WHERE UserId = ?', [id], function(error, results, fields) {
@@ -56,7 +56,7 @@ app.post('/join_process', function(req, res) {
 app.post('/login_process', (req, res) => {
     const { id, password } = req.body;
 
-    console.log('Received data:', { id, password });
+    //console.log('Received data:', { id, password });
 
     if (id && password) {
         db.query('SELECT * FROM user WHERE UserId = ? AND Password = ?', 
@@ -87,7 +87,7 @@ app.post('/reservations_process', (req,res) =>{
     var day = ('0' + today.getDate()).slice(-2);
 
     var dateString = year + '-' + month  + '-' + day;
-
+    
     db.query(`SELECT * FROM customers WHERE ReservationTime like '%${dateString}%' `, (error, results) => {
         if (error) {
             console.error('DB query error:', error);
@@ -100,6 +100,44 @@ app.post('/reservations_process', (req,res) =>{
         } 
    }) 
 });
+
+//고객이 원하는 priceRange의 매물 조회
+app.post('/user_reservations_process', (req,res) =>{
+
+    const price = req.body;
+    const under = price - 5000;
+    const upper = price + 5000;
+    db.query(`SELECT * FROM property WHERE PriceRange BETWEEN ? AND ?`,[under, upper] ,(error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have customer" });
+        } 
+   }) 
+});
+
+//광고에서 Property로
+app.post('/adtopro_process', (req,res) =>{
+
+    const property_id = req.body;
+    
+    db.query(`SELECT * FROM property WHERE propertyid = ?`,[property_id] ,(error, results) => {
+        if (error) {
+            console.error('DB query error:', error);
+            return res.json({ code: 500, reason: "DB query error" });
+        }
+        if (results.length > 0) {
+            res.json(results); 
+        } else {
+            res.json({ code: 404, reason: "no have customer" });
+        } 
+   }) 
+});
+
 
 //직원 관리
 app.post('/employee_process', (req,res) =>{
@@ -147,6 +185,7 @@ app.post('/property_process', (req,res) =>{
    }) 
 });
 
+//광고
 app.post('/advertisement_process', (req,res) =>{
     db.query('SELECT property.PropertyName, advertisement.Media,advertisement.InquiryCount FROM advertisement INNER JOIN property ON advertisement.PropertyID = property.PropertyID',
     (error, results) => {

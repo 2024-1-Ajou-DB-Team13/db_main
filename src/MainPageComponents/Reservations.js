@@ -65,7 +65,8 @@ function Reservations() {
   const callApi = async () => {
     try {
       const response = await axios.post("http://localhost:5000/reservations_process", {}, { withCredentials: true });
-      if (response.data.code === 202 && Array.isArray(response.data)) {
+      if (Array.isArray(response.data)) {
+        console.log(response.data);
         setReservations(response.data);
         setNoData(false);
       } else if (response.data.code === 404) {
@@ -78,6 +79,15 @@ function Reservations() {
       } else {
         setNoData(false);
       }
+    }
+  };
+
+  const callApi2 = async()=>{
+    try {
+      const response = await axios.post("http://localhost:5000/user_reservations_process", { withCredentials: true } );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
