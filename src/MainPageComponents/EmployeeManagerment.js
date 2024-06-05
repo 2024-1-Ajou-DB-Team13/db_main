@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 0px;
+  padding: 20px;
 `;
 
 const Header = styled.h1`
@@ -32,30 +32,50 @@ const Td = styled.td`
   font-size: 20px;
 `;
 
-function EmployeeManagement() {
-  const employee = [
-    {UserID: 1, UserType: 'admin', UserName: 'admin', Password: '0000'},
-    {UserID: 2, UserType: 'manager', UserName: 'manager', Password: '0000'},
-    {UserID: 2, UserType: 'manager', UserName: 'manager', Password: '0000'},
-    {UserID: 2, UserType: 'manager', UserName: 'manager', Password: '0000'},
-    {UserID: 2, UserType: 'manager', UserName: 'manager', Password: '0000'},
-    {UserID: 2, UserType: 'manager', UserName: 'manager', Password: '0000'},
-    {UserID: 2, UserType: 'manager', UserName: 'manager', Password: '0000'},
-  ];
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
 
-  const callApi = async()=>{
+const PageButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 10px;
+`;
+
+function EmployeeManagement() {
+  const [employees, setEmployees] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
+
+  const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/employee_process", { withCredentials: true } );
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/employee_process", {}, { withCredentials: true });
+      setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(()=>{
-      callApi();
-    }, []);
-    var index = 0;
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  const currentData = employees.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const nextPage = () => {
+    if ((currentPage + 1) * itemsPerPage < employees.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <Container>
@@ -70,9 +90,9 @@ function EmployeeManagement() {
           </tr>
         </thead>
         <tbody>
-          {employee.map(employee => (
-            <tr key={employee.cusID}>
-              <Td>{index++}</Td>
+          {currentData.map((employee, index) => (
+            <tr key={index}>
+              <Td>{currentPage * itemsPerPage + index + 1}</Td>
               <Td>{employee.UserName}</Td>
               <Td>{employee.UserID}</Td>
               <Td>{employee.UserType}</Td>
@@ -80,6 +100,10 @@ function EmployeeManagement() {
           ))}
         </tbody>
       </Table>
+      <PaginationContainer>
+        <PageButton onClick={previousPage}>이전</PageButton>
+        <PageButton onClick={nextPage}>다음</PageButton>
+      </PaginationContainer>
     </Container>
   );
 }
