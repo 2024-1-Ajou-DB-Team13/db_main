@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from "axios";
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -45,12 +46,33 @@ const Td = styled.td`
 `;
 
 function DesiredPriceRange() {
-  const properties = [
-    { id: 1, name: "호반베르디움 아파트", grade: "A", address: "서울시 관악구 관악로", phone: "010-1234-5678" },
-    { id: 2, name: "abc 아파트", grade: "A", address: "서울시 관악구 관악로", phone: "010-1234-5678" },
-    { id: 3, name: "**시 def 주택", grade: "A", address: "서울시 관악구 관악로", phone: "010-1234-5678" },
-    { id: 4, name: "blahblah 집", grade: "A", address: "서울시 관악구 관악로", phone: "010-1234-5678" },
-  ];
+  var desired_price = localStorage.getItem('desired_price')
+  const [properties, setProperties] = useState([]);
+  const [noData, setNoData] = useState(false);
+
+  const callApi = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/user_reservations_process", {desired_price}, { withCredentials: true });
+      if (Array.isArray(response.data)) {
+        console.log(response.data);
+        setProperties(response.data);
+        setNoData(false);
+      } else if (response.data.code === 404) {
+        setNoData(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      if (error.response && error.response.status === 404) {
+        setNoData(true);
+      } else {
+        setNoData(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    callApi();
+  }, []);
 
   const handleClose = () => {
     window.close();
@@ -59,7 +81,9 @@ function DesiredPriceRange() {
   return (
     <Container>
       <Header>
-        <Title>가격대 검색(3억 2천)</Title>
+        <Title>가격대 검색({desired_price > 10000 ?
+                    (Math.floor(desired_price / 10000) + '억' + Math.floor(desired_price / 1000 % 10) + '천') :
+                    (Math.floor(desired_price / 1000 % 10) + '천')})</Title>
         <CloseButton onClick={handleClose}>×</CloseButton>
       </Header>
       <Table>
@@ -70,16 +94,18 @@ function DesiredPriceRange() {
             <Th>등급</Th>
             <Th>주소</Th>
             <Th>전화번호</Th>
+            <Th>가격대</Th>
           </tr>
         </thead>
         <tbody>
           {properties.map(property => (
-            <tr key={property.id}>
-              <Td>{property.id}</Td>
-              <Td>{property.name}</Td>
-              <Td>{property.grade}</Td>
-              <Td>{property.address}</Td>
-              <Td>{property.phone}</Td>
+            <tr key={property.PropertyID}>
+              <Td>{property.PropertyID}</Td>
+              <Td>{property.PropertyName}</Td>
+              <Td>{property.Grade}</Td>
+              <Td>{property.Address}</Td>
+              <Td>{property.LandlordContact}</Td>
+              <Td>{property.PriceRange}</Td>
             </tr>
           ))}
         </tbody>

@@ -104,9 +104,10 @@ app.post('/reservations_process', (req,res) =>{
 //고객이 원하는 priceRange의 매물 조회
 app.post('/user_reservations_process', (req,res) =>{
 
-    const price = req.body;
+    const price = req.body.desired_price;
     const under = price - 5000;
-    const upper = price + 5000;
+    const upper = Number(price) + 5000;
+    
     db.query(`SELECT * FROM property WHERE PriceRange BETWEEN ? AND ?`,[under, upper] ,(error, results) => {
         if (error) {
             console.error('DB query error:', error);
