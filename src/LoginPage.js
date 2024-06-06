@@ -84,7 +84,7 @@ function LoginPage() {
       console.log(response.data);
       localStorage.setItem('userType', response.data.type);
       localStorage.setItem('userName', response.data.name)
-      navigate('/main'); }
+      navigate('/main/reservations'); }
       else console.log(response.data.reason)
 
     } catch (error) {
