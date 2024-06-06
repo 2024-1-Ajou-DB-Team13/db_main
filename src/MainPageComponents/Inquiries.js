@@ -106,8 +106,8 @@ function Inquiries() {
         <thead>
           <tr>
             <Th>번호</Th>
-            <Th>매물명</Th>
-            <Th>광고 매체 명</Th>
+            <Th>매물 이름</Th>
+            <Th>광고 매체</Th>
             <Th>문의 횟수</Th>
           </tr>
         </thead>

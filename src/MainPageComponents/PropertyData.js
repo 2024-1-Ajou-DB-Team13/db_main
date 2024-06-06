@@ -87,9 +87,9 @@ function PropertyData() {
         <thead>
           <tr>
             <Th>번호</Th>
-            <Th>매물명</Th>
+            <Th>매물 이름</Th>
             <Th>가격대</Th>
-            <Th>주인 연락처</Th>
+            <Th>임대인 연락처</Th>
             <Th>등급</Th>
             <Th>주소</Th>
           </tr>
