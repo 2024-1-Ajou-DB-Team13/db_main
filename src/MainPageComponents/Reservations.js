@@ -119,7 +119,7 @@ function Reservations() {
 
   return (
     <Container>
-      <Header>금일 예약 고객님</Header>
+      <Header>금일 예약 고객</Header>
       {noData ? (
         <NoDataMessage>금일 손님이 없습니다.</NoDataMessage>
       ) : (

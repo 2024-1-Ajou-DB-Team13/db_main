@@ -53,7 +53,7 @@ function View() {
     <MainPageContainer>
       <Navigation>
         <UserDisplayComponent userName={userName}/>
-        <NavButton to="/view/reservations">금일 예약 고객님</NavButton>
+        <NavButton to="/view/reservations">금일 예약 고객</NavButton>
       </Navigation>
       <Content>
         <Routes>
