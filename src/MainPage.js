@@ -64,7 +64,7 @@ function MainPage() {
     <MainPageContainer>
       <Navigation>
         <UserDisplayComponent userName={userName}/>
-        <NavButton to="/main/reservations">금일 예약 고객님</NavButton>
+        <NavButton to="/main/reservations">금일 예약 고객</NavButton>
         {(userType === "manager" || userType === "admin") &&
           <ManagerMenu>
             {(userType === "admin") &&
