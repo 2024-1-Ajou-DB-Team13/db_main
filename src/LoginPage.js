@@ -83,6 +83,7 @@ function LoginPage() {
      if(response.data.code === 202) {
       console.log(response.data);
       localStorage.setItem('userType', response.data.type);
+      localStorage.setItem('userName', response.data.name)
       navigate('/main'); }
       else console.log(response.data.reason)
 

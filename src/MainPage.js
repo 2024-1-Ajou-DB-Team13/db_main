@@ -58,7 +58,7 @@ const ManagerMenu = styled.div`
 
 function MainPage() {
   const userType = localStorage.getItem('userType');
-  const userName = "UserName";
+  const userName = localStorage.getItem('userName');
 
   return (
     <MainPageContainer>
