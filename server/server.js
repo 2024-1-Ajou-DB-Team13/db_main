@@ -88,7 +88,7 @@ app.post('/reservations_process', (req,res) =>{
 
     var dateString = year + '-' + month  + '-' + day;
     
-    db.query(`SELECT * FROM customers WHERE ReservationTime like '%${dateString}%' `, (error, results) => {
+    db.query(`SELECT * FROM customers WHERE ReservationTime like '%${dateString}%' order by ReservationTime`, (error, results) => {
         if (error) {
             console.error('DB query error:', error);
             return res.json({ code: 500, reason: "DB query error" });
