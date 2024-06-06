@@ -27,16 +27,19 @@ const Td = styled.td`
 `;
 
 function AdToPro() {
+  const [property, setProperty] = useState({});
+
   const properties = [
     { id: 1, name: "호반베르디움 아파트", grade: "A", address: "서울시 관악구 관악로",pricerange: "3억 2000", phone: "010-1234-5678" },
   ];
 
-  const p_id = localStorage.getItem('property_id');
+  const p_name = localStorage.getItem('property_name');
 
   const callApi = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/adtopro_process", {p_id}, { withCredentials: true });
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/adtopro_process", {p_name}, { withCredentials: true });
+      console.log(response.data[0]);
+      setProperty(response.data[0])
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -63,15 +66,13 @@ function AdToPro() {
           </tr>
         </thead>
         <tbody>
-          {properties.map(property => (
-            <tr key={property.id}>
-              <Td>{property.name}</Td>
-              <Td>{property.grade}</Td>
-              <Td>{property.address}</Td>
-              <Td>{property.pricerange}</Td>
-              <Td>{property.phone}</Td>
-            </tr>
-          ))}
+          <tr key={property.PropertyID}>
+            <Td>{property.PropertyName}</Td>
+            <Td>{property.Grade}</Td>
+            <Td>{property.Address}</Td>
+            <Td>{property.PriceRange}</Td>
+            <Td>{property.LandlordContact}</Td>
+          </tr>
         </tbody>
       </Table>
     </Container>

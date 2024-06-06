@@ -95,6 +95,10 @@ function Inquiries() {
     }
   };
 
+  const sendData = (inquiry) => {
+    localStorage.setItem('property_name', inquiry)
+  }
+
   return (
     <Container>
       <Header>광고 매체별 문의</Header>
@@ -109,7 +113,7 @@ function Inquiries() {
         </thead>
         <tbody>
           {currentData.map((inquiry, index) => (
-            <StyledNavLink to="/adtopro" key={index}>
+            <StyledNavLink to="/adtopro" key={index} onClick={() => sendData(inquiry.PropertyName)}>
               <Td>{currentPage * itemsPerPage + index + 1}</Td>
               <Td>{inquiry.PropertyName}</Td>
               <Td>{inquiry.Media}</Td>

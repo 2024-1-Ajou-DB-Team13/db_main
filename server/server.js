@@ -123,9 +123,9 @@ app.post('/user_reservations_process', (req,res) =>{
 //광고에서 Property로
 app.post('/adtopro_process', (req,res) =>{
 
-    const property_id = req.body;
+    const property_name = req.body.p_name;
     
-    db.query(`SELECT * FROM property WHERE propertyid = ?`,[property_id] ,(error, results) => {
+    db.query(`SELECT * FROM property WHERE PropertyName = ?`,[property_name] ,(error, results) => {
         if (error) {
             console.error('DB query error:', error);
             return res.json({ code: 500, reason: "DB query error" });
@@ -133,7 +133,7 @@ app.post('/adtopro_process', (req,res) =>{
         if (results.length > 0) {
             res.json(results); 
         } else {
-            res.json({ code: 404, reason: "no have customer" });
+            res.json({ code: 404, reason: "no results found" });
         } 
    }) 
 });
