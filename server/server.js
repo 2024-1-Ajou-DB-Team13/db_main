@@ -105,8 +105,8 @@ app.post('/reservations_process', (req,res) =>{
 app.post('/user_reservations_process', (req,res) =>{
 
     const price = req.body.desired_price;
-    const under = price - 5000;
-    const upper = Number(price) + 5000;
+    const under = price - 2000;
+    const upper = Number(price) + 2000;
     
     db.query(`SELECT * FROM property WHERE PriceRange BETWEEN ? AND ?`,[under, upper] ,(error, results) => {
         if (error) {
