@@ -45,6 +45,19 @@ const PageButton = styled.button`
   margin: 0 10px;
 `;
 
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+  };
+  return date.toLocaleString('ko-KR', options);
+}
+
+
 function CustomerData() {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -95,7 +108,7 @@ function CustomerData() {
             <tr key={index}>
               <Td>{currentPage * itemsPerPage + index + 1}</Td>
               <Td>{customer.Name}</Td>
-              <Td>{customer.ReservationTime}</Td>
+              <Td>{formatDateTime(customer.ReservationTime)}</Td>
               <Td>{customer.DesiredPriceRange}</Td>
             </tr>
           ))}
