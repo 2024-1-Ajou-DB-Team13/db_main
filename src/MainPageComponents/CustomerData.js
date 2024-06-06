@@ -57,7 +57,6 @@ function formatDateTime(dateString) {
   return date.toLocaleString('ko-KR', options);
 }
 
-
 function CustomerData() {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
