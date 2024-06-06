@@ -57,6 +57,19 @@ const NoDataMessage = styled.div`
   margin-top: 20px;
 `;
 
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+  };
+  return date.toLocaleString('ko-KR', options);
+}
+
+
 function Reservations() {
   const [reservations, setReservations] = useState([]);
   const [noData, setNoData] = useState(false);
@@ -124,7 +137,7 @@ function Reservations() {
               <tr key={index}>
                 <Td>{index + 1}</Td>
                 <Td>{reservation.Name} 님</Td>
-                <Td>{reservation.ReservationTime}</Td>
+                <Td>{formatDateTime(reservation.ReservationTime)}</Td>
                 <Td>
                   <PriceButton onClick={() => {openPriceRangeWindow(reservation.DesiredPriceRange)}}>
                     {reservation.DesiredPriceRange > 10000 ?
