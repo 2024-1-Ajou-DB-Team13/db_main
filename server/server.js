@@ -67,7 +67,7 @@ app.post('/login_process', (req, res) => {
                 return res.json({ code: 500, reason: "DB query error" });
             }
             if (results.length > 0) {
-                res.json({ code: 202, type: results[0].UserType}); 
+                res.json({ code: 202, type: results[0].UserType, name: results[0].UserName}); 
             } else {
                 res.json({ code: 404, reason: "invalid id or pw" });
             }            

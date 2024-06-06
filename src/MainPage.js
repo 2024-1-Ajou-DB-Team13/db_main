@@ -58,13 +58,13 @@ const ManagerMenu = styled.div`
 
 function MainPage() {
   const userType = localStorage.getItem('userType');
-  const userName = "UserName";
+  const userName = localStorage.getItem('userName');
 
   return (
     <MainPageContainer>
       <Navigation>
         <UserDisplayComponent userName={userName}/>
-        <NavButton to="/main/reservations">금일 예약 고객님</NavButton>
+        <NavButton to="/main/reservations">금일 예약 고객</NavButton>
         {(userType === "manager" || userType === "admin") &&
           <ManagerMenu>
             {(userType === "admin") &&
