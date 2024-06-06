@@ -188,7 +188,7 @@ app.post('/property_process', (req,res) =>{
 
 //광고
 app.post('/advertisement_process', (req,res) =>{
-    db.query('SELECT property.PropertyName, advertisement.Media,advertisement.InquiryCount FROM advertisement INNER JOIN property ON advertisement.PropertyID = property.PropertyID',
+    db.query('SELECT property.PropertyName, advertisement.Media,advertisement.InquiryCount FROM advertisement INNER JOIN property ON advertisement.PropertyID = property.PropertyID order by advertisement.InquiryCount desc',
     (error, results) => {
         if (error) {
             console.error('DB query error:', error);
