@@ -29,10 +29,6 @@ const Td = styled.td`
 function AdToPro() {
   const [property, setProperty] = useState({});
 
-  const properties = [
-    { id: 1, name: "호반베르디움 아파트", grade: "A", address: "서울시 관악구 관악로",pricerange: "3억 2000", phone: "010-1234-5678" },
-  ];
-
   const p_name = localStorage.getItem('property_name');
 
   const callApi = async () => {

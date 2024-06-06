@@ -124,7 +124,11 @@ function Reservations() {
                 <Td>{reservation.Name} 님</Td>
                 <Td>{reservation.ReservationTime}</Td>
                 <Td>
-                  <PriceButton onClick={openPriceRangeWindow}>{reservation.DesiredPriceRange}</PriceButton>
+                  <PriceButton onClick={openPriceRangeWindow}>
+                    {reservation.DesiredPriceRange > 10000 ?
+                    (Math.floor(reservation.DesiredPriceRange / 10000) + '억' + Math.floor(reservation.DesiredPriceRange / 1000 % 10) + '천') :
+                    (Math.floor(reservation.DesiredPriceRange / 1000 % 10) + '천')}
+                  </PriceButton>
                 </Td>
               </tr>
             ))}
