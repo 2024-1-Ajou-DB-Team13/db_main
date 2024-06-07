@@ -1,7 +1,8 @@
 # About
-2024년도 1학기, 아주대학교 데이터베이스 수업 팀프로젝트의 프론트엔드 부분입니다.
+2024년도 1학기, 아주대학교 데이터베이스 수업 팀프로젝트입니다.
+![image](https://github.com/2024-1-Ajou-DB-Team13/db_front/assets/133750250/2d1b2d57-2868-4742-ac23-a69c8518bb0b)
 
-스택은 React를 사용했습니다.
+스택은 React, node.js, MySQL를 사용했습니다.
 # 실행
 ```shell
 npm start
